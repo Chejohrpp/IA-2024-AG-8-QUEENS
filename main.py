@@ -36,6 +36,14 @@ def generate_total_blokes(blokes):
     print('sum_total ', total)
     return total
 
+def search_better_aptitude_value(blokes):
+    better = 0
+    for bloke in blokes:
+        if ( better < bloke.aptitude_value):
+            better = bloke.aptitude_value
+    print('Better apitude ', better)
+    return better
+
 def generate_number_aptitude(bloke):
     # Chessboard 8 x 8
     # chessboard_8x8 = [[0] * 8 for _ in range(8)]  # Initialize an empty chessboard
@@ -113,6 +121,14 @@ def one_point_crossover(bloke1,bloke2):
     # print('son1', generate_number_aptitude(bloke_son1))
     # print('son2', generate_number_aptitude(bloke_son2))
 
+    son1 = generate_number_aptitude(bloke_son1)
+    son2 = generate_number_aptitude(bloke_son2)
+
+    if (son1.aptitude_value >= son2.aptitude_value):
+        return [bloke_son1]
+    else:
+        return [bloke_son2]
+    
     return [bloke_son1,bloke_son2]
 
 def mutation(bloke):
@@ -126,22 +142,23 @@ def sustitution(bloke):
     None
 
 if __name__ == '__main__':
-    print("Gen 0")
+    # Create a dictionary to store generations and their corresponding aptitudes
+    gen_aptitude = {}
     population = create_population()
-    blokes = evaluate_aptitude(population)
-    total = generate_total_blokes(blokes)
-    blokes_new_gen = []
-    for i in range(TOTAL_SONS):
-        (newSons(total, blokes,blokes_new_gen))
-
-    for i in range(20):
+    for i in range(40):
         #New population ->
-        print("Gen ", i +1)
-        blokes = evaluate_aptitude(blokes_new_gen)
+        print("Gen", i)
+        blokes = evaluate_aptitude(population)
         total = generate_total_blokes(blokes)
+        better_gen = search_better_aptitude_value(blokes)
+        gen_aptitude[i] = [better_gen]
+        # if better_gen > 26 : break
         blokes_new_gen = []
-        for i in range(TOTAL_SONS):
+        for i in range(TOTAL_SONS*2):
             (newSons(total, blokes,blokes_new_gen))
+        population = blokes_new_gen
+
+    print(gen_aptitude) # print like this -> { No.Generation : [better_value_that_generation] , ...}
 
 
     
